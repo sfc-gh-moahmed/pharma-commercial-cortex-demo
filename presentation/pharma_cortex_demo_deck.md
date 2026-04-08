@@ -1,215 +1,250 @@
 ---
+title: "Snowflake AI for Pharma Commercial Analytics"
+author: "Snowflake"
 marp: true
 theme: default
 paginate: true
-backgroundColor: #ffffff
-color: #1a1a1a
 style: |
   section {
     font-family: 'Segoe UI', Arial, sans-serif;
-    padding: 40px 60px;
+    padding: 20px 32px 14px 32px;
+    font-size: 18px;
   }
-  h1 { color: #29B5E8; }
-  h2 { color: #1A73E8; }
-  h3 { color: #1a1a1a; }
-  .highlight { background: #E3F2FD; padding: 10px; border-radius: 5px; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
-  th { background: #29B5E8; color: white; padding: 8px 12px; text-align: left; }
-  td { padding: 7px 12px; border-bottom: 1px solid #e0e0e0; }
-  tr:nth-child(even) { background: #f5f5f5; }
-  code { background: #f0f4f8; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
-  pre { background: #1e2a3a; color: #e8f4fd; padding: 16px; border-radius: 8px; font-size: 0.78em; }
+  h1 { color: #29B5E8; font-size: 34px; margin: 0 0 6px 0; }
+  h2 { color: #11567F; font-size: 26px; margin: 0 0 8px 0; }
+  h3 { font-size: 18px; margin: 0 0 4px 0; color: #1a1a1a; }
+  p  { margin: 4px 0; font-size: 16px; }
+  ul, ol { margin: 4px 0; padding-left: 22px; }
+  li { margin: 3px 0; font-size: 16px; line-height: 1.35; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 5px 0; }
+  th { background: #29B5E8; color: white; padding: 6px 10px; text-align: left; font-size: 13px; }
+  td { padding: 5px 9px; border-bottom: 1px solid #dde8f4; vertical-align: top; line-height: 1.3; }
+  tr:nth-child(even) td { background: #f5f9ff; }
+  code { background: #e8f1fb; padding: 1px 5px; border-radius: 3px; font-size: 13px; color: #11567F; }
+  pre { background: #1a2636; color: #d4eaf7; padding: 10px 13px; border-radius: 6px;
+        font-size: 12px; margin: 4px 0; line-height: 1.4; overflow: hidden; }
+  pre code { background: none; color: #d4eaf7; padding: 0; font-size: 12px; }
+  blockquote { border-left: 4px solid #29B5E8; padding: 5px 12px; margin: 6px 0;
+               font-style: italic; color: #444; font-size: 15px; background: #eef6fd; border-radius: 0 4px 4px 0; }
+  .columns { display: flex; gap: 18px; }
+  .col { flex: 1; }
+  .label { display: inline-block; background: #29B5E8; color: white;
+           padding: 2px 8px; border-radius: 3px; font-size: 12px; font-weight: bold; }
+  .label-green { display: inline-block; background: #1e8449; color: white;
+                 padding: 2px 8px; border-radius: 3px; font-size: 12px; font-weight: bold; }
+  section.title { text-align: center; }
+  section.title h1 { font-size: 38px; margin-top: 60px; }
+  section.title h2 { font-size: 22px; color: #555; border: none; }
 ---
+
+<!-- _class: title -->
 
 # Snowflake AI for Commercial Analytics
+
 ## Cortex Search · Cortex Analyst · Snowflake Intelligence
 
----
+<br>
 
-**Pharma Commercial Team Demo | 2025**
+**Pharma Commercial Team Demo &nbsp;|&nbsp; 2026**
 
-> *Vivitrol · Aristada · Lybalvi*
+*Vivitrol · Aristada · Lybalvi*
 
-Built on Snowflake — no external AI services, no data movement, no SQL required for end users.
+All data + AI in Snowflake — no external services, no data movement, zero SQL for end users.
 
 ---
 
 ## The Commercial Analytics Challenge
 
-### Today's pain points
+- **Fragmented HCP data** — prescriber info lives in multiple systems; a single misspelling breaks a query
+- **Rep call notes siloed in CRM** — qualitative field intelligence locked in free-text, invisible to BI tools
+- **Formulary data goes stale** — payer barriers surface only in field reports, not dashboards
+- **Business questions require the data team** — every insight becomes a SQL ticket with a waiting queue
+- **No bridge between structured + unstructured data** — Rx metrics live in tables; physician objections live in text
 
-- **Fragmented HCP data** — prescriber information lives in multiple systems with inconsistent name formatting; a single query fails on a misspelling
-- **Rep call notes in CRM silos** — qualitative field intelligence is locked in free-text fields that traditional BI tools cannot search
-- **Formulary data is static** — market access spreadsheets go stale; payer barriers surface only in field reports
-- **Business questions require the data team** — any question beyond a canned dashboard requires a SQL request and a waiting queue
-- **No unified search across structured + unstructured data** — Rx metrics live in tables; objection notes live in text; no tool bridges both
+<br>
 
----
-
-> *A territory manager should be able to ask "which psychiatrists in Texas haven't had a call in 60 days?" and get an answer in seconds — not a ticket.*
+> *"Which psychiatrists in Texas haven't had a rep call in 60 days?" should take seconds — not a ticket.*
 
 ---
 
 ## Solution Architecture
 
-```
-┌─────────────────────────┐   ┌──────────────────────────┐   ┌─────────────────────────────┐
-│   Synthetic Data Layer  │   │    AI Services Layer      │   │      Interface Layer        │
-│─────────────────────────│   │──────────────────────────│   │─────────────────────────────│
-│  HCPS                   │──►│  Cortex Search           │──►│  Snowflake Intelligence     │
-│  PRESCRIPTIONS          │   │  (HCP names + call notes)│   │  ● Chat-based Q&A           │
-│  CALL_NOTES             │──►│                          │   │  ● Zero SQL for users       │
-│  PRODUCTS               │   │  Semantic View           │──►│  ● Tables, charts, text     │
-│  TERRITORIES            │──►│  (Business KPIs + dims)  │   │  ● Pre-loaded sample Qs     │
-│  MARKET_ACCESS          │   │                          │   └─────────────────────────────┘
-│  SALES_REPS             │──►│  Cortex Agent            │
-│  QUOTAS                 │   │  (Routes to right tool)  │
-└─────────────────────────┘   └──────────────────────────┘
-```
+![w:920 Architecture Diagram](https://kroki.io/mermaid/svg/eNpVkc9qwzAMxu9-CpHDboXtBQaum7FCmrVOKGylBOOqqaljB9npnyfbfU-2JC2j08XiQ_rps1STag-QSQZ98E0yU1FBpq5I7F0sA_x8w5L8rtMxsBKJTPRkcNQltoEtCYMm00bjXWBCWQu5jxiSLUwmrzDdJMJTxAsUqEgfBmiV80VaFSmX4r0q1oKVqZTz8kN-PoqCZ1k1z8s0e1CT7c3nyBabpMBGuWg0rA2eWSkvg6_89iwUHTFCcVCETOIJXYeDznU0J4Thd4yfahi6WqRBuOOnI372Z53X6CITvmmQtFGWO2WvIbI3g3Y3dxGtNX2JRrbrt1dFX-l-aLzTxI025rMxT3vjzp_3Vh0R_vXnKnakbH8AV3eqRlg9cfaF5KFYZbD3BF1ACuzlGQrVtLYv6DCMu0-2v6NglGA=)
 
-**One platform. All data + AI in Snowflake. No external services.**
+**One platform. All data + AI in Snowflake. No external services, no API keys, no data movement.**
 
 ---
 
 ## Data Model
 
-| Table | Contents |
-|-------|----------|
-| `HCPS` | Prescriber master — name, specialty, state, HCP type, tier |
-| `PRESCRIPTIONS` | Monthly TRx and NRx by HCP, product, territory, and rep |
-| `CALL_NOTES` | Free-text rep call notes — observations, objections, access issues |
-| `PRODUCTS` | Product catalog — Vivitrol, Aristada, Lybalvi with therapeutic areas |
-| `TERRITORIES` | Territory hierarchy — territory → region → national with rep assignments |
-| `MARKET_ACCESS` | Payer formulary status by product and plan — coverage tier, PA required |
-| `SALES_REPS` | Rep master — name, district, region, hire date |
-| `QUOTAS` | Annual TRx targets by rep, territory, and product |
+| Table | Contents | ~Rows |
+|-------|----------|------:|
+| `HCPS` | 500 HCPs — name, NPI, specialty, city, state, tier | 500 |
+| `PRESCRIPTIONS` | Monthly TRx & NRx by HCP, product, and territory | ~12,000 |
+| `CALL_ACTIVITY` | Rep-HCP calls — type, outcome, products discussed | ~15,000 |
+| `CALL_NOTES` | Rich free-text rep field notes — access issues, objections, feedback | 30 |
+| `PRODUCTS` | Vivitrol, Aristada, Aristada Initio, Lybalvi catalog | 4 |
+| `TERRITORIES` | 50 US territories → district → region hierarchy | 50 |
+| `SALES_REPS` | 50 field reps with territory and district assignments | 50 |
+| `MARKET_ACCESS` | Payer formulary status by product & plan (50 payers) | ~600 |
 
----
-
-**~5,000 synthetic HCPs · ~24 months of Rx history · ~8,000 call notes**
-Realistic distributions across CNS / addiction medicine specialties and all U.S. regions.
+Synthetic data modeled on CNS / addiction medicine specialties across all U.S. regions.
 
 ---
 
 ## Cortex Search: Three Ways to Use It
 
-| Mode | What It Does | Best For | Demo Example |
-|------|-------------|----------|--------------|
-| **Mode 1: Analyst-Integrated** | Links CS to a Semantic View dimension for fuzzy name resolution | High-cardinality dims (HCP names, territory codes) | `"Dr. Murrey"` → resolves to `"Dr. Murray"` → SQL succeeds |
-| **Mode 2: Standalone** | Direct semantic search via `CORTEX_SEARCH()` SQL function | Custom search UIs, exploratory HCP profiling | `"addiction psychiatry Texas"` → ranked HCP list with scores |
-| **Mode 3: Agent Tool** | CS as a RAG retrieval tool inside a Cortex Agent | Unstructured field intelligence, call note search | `"formulary barriers Vivitrol"` → ranked call note excerpts |
+| Mode | What It Does | Key Demo Moment |
+|------|-------------|----------------|
+| **1 — Analyst-Integrated** | CS linked to a Semantic View dimension; fuzzy name resolution before SQL generation | "TRx for Dr. Andersen" → CS resolves to "Dr. Anderson" → SQL returns 42 TRx *(instead of 0)* |
+| **2 — Standalone** | Direct `SEARCH_PREVIEW()` for semantic/fuzzy search on HCP profiles and call notes | "addiction psychiatry Texas" → ranked HCP list with scores, no exact match required |
+| **3 — Agent Tool** | CS as a RAG retrieval tool inside the Cortex Agent, alongside Cortex Analyst | "Vivitrol formulary barriers" → agent retrieves top 5 matching rep call note excerpts |
+
+<br>
+
+Each mode is independently valuable. Together they cover the full spectrum — structured analytics to pure unstructured retrieval — with the agent routing automatically between them.
 
 ---
 
-Each mode is independently useful. Together they cover the full spectrum from pure structured analytics to pure unstructured retrieval — with the agent intelligently routing between them.
+## Demo: Mode 1 — Cortex Search Inside Cortex Analyst
 
----
+<div class="columns">
+<div class="col">
 
-## Demo: Cortex Search Mode 1 — Analyst Integration
-
-### The Problem: Exact String Matching Fails on HCP Names
+<span class="label">WITHOUT Cortex Search</span>
 
 ```sql
--- WITHOUT Cortex Search: question returns no rows
--- User asks: "Show TRx for Dr. Andersen in Q3"
--- Cortex Analyst generates:
-SELECT SUM(trx) FROM prescriptions p
-JOIN hcps h ON p.hcp_id = h.hcp_id
-WHERE h.hcp_full_name = 'Dr. Andersen'   -- ← no match, 0 rows
-  AND quarter = 'Q3';
+-- User asks: "Show TRx for Dr. Andersen"
+-- Analyst generates exact string match:
+
+WHERE hcp_full_name = 'Dr. Andersen'
+-- ↑ no exact match in database
+
+-- Result: 0 rows returned ✗
 ```
 
-### The Fix: Cortex Search Resolves the Name First
+Name misspelling → broken query → user thinks there's no data.
+
+</div>
+<div class="col">
+
+<span class="label-green">WITH Cortex Search on hcp_name dimension</span>
 
 ```sql
--- WITH Cortex Search linked to hcp_full_name dimension:
--- CS resolves "Dr. Andersen" → "Dr. Anderson, Robert M."
--- Cortex Analyst now generates correct SQL → result: 42 TRx
+-- CS resolves at query time:
+--   "Dr. Andersen"
+--     → "Dr. James Anderson"
+-- Analyst generates correct SQL:
+
+WHERE hcp_full_name = 'Dr. James Anderson'
+-- ↑ fuzzy match resolved ✓
+
+-- Result: 42 TRx returned ✓
 ```
 
+Same question. Correct answer.
+
+</div>
+</div>
+
+> **How:** `WITH CORTEX SEARCH SERVICE HCP_NAME_SEARCH_SVC` in the Semantic View DDL links the service to the `hcp_name` dimension. Cortex Analyst calls it at query time to resolve literal values before generating SQL.
+
 ---
 
-**Key message:** Linking Cortex Search to high-cardinality Semantic View dimensions eliminates the #1 cause of Cortex Analyst returning empty results — name mismatches.
+## Demo: Mode 2 — Standalone Cortex Search
 
----
+<div class="columns">
+<div class="col">
 
-## Demo: Cortex Search Mode 2 — Standalone
-
-### Direct Semantic Search on HCP Profiles
+**Query HCP profile search service directly**
 
 ```sql
-SELECT *
-FROM TABLE(
-  ALKERMES_DEMO.COMMERCIAL.HCP_SEARCH(
-    QUERY       => 'addiction medicine psychiatrist high volume',
-    COLUMNS     => ['HCP_FULL_NAME','SPECIALTY','STATE','HCP_TYPE'],
-    LIMIT       => 10
+SELECT PARSE_JSON(
+  SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
+    'ALKERMES_DEMO', 'COMMERCIAL',
+    'HCP_PROFILE_SEARCH_SVC',
+    OBJECT_CONSTRUCT(
+      'query', 'addiction medicine Texas',
+      'columns', ARRAY_CONSTRUCT(
+        'HCP_FULL_NAME', 'SPECIALTY', 'CITY'),
+      'limit', 5
+    )::VARCHAR
   )
-);
+) AS results;
 ```
 
-**Example results:**
+No exact match required. Works with partial names, specialties, and location combinations.
 
-| HCP Name | Specialty | State | Score |
-|----------|-----------|-------|-------|
-| Dr. Sarah Mitchell | Addiction Medicine | TX | 0.94 |
-| Dr. James Okafor | Psychiatry | TX | 0.89 |
-| Dr. Rachel Kim | Addiction Psychiatry | TX | 0.87 |
+</div>
+<div class="col">
 
----
+**Example results**
 
-**Key message:** Snowflake-native fuzzy and semantic search — no Elasticsearch, no OpenSearch, no external vector database needed.
+| HCP Name | Specialty | City |
+|----------|-----------|------|
+| Dr. Sarah Martinez | Addiction Medicine | Dallas |
+| Dr. James Brown | Psychiatry | Houston |
+| Dr. Patricia Davis | Addiction Medicine | Austin |
+| Dr. Thomas Garcia | Addiction Psychiatry | San Antonio |
+
+**Key message:** Snowflake-native semantic search — no Elasticsearch, no vector database, no custom embedding pipelines needed.
+
+</div>
+</div>
 
 ---
 
 ## Semantic View: The Business Metric Layer
 
-### Metrics defined once, queryable in plain English
+<div class="columns">
+<div class="col">
+
+**Metrics** — defined once, queryable in plain English
 
 | Metric | Definition |
 |--------|-----------|
-| `TOTAL_TRX` | Sum of total prescriptions dispensed |
-| `TOTAL_NRX` | Sum of new prescriptions written |
+| `TOTAL_TRX` | Total prescriptions dispensed |
+| `TOTAL_NRX` | New patient prescriptions written |
 | `MARKET_SHARE_PCT` | Product TRx ÷ total market TRx × 100 |
-| `TOTAL_REVENUE` | TRx × product WAC price |
-| `ACTIVE_HCP_COUNT` | HCPs with ≥1 TRx in the period |
-| `CALL_TO_RX_RATE` | Rep calls ÷ resulting TRx |
+| `TOTAL_REVENUE_USD` | TRx × product list price |
+| `ACTIVE_HCPS` | HCPs with ≥ 1 TRx in period |
+| `AVG_TRX_PER_HCP` | TRx ÷ active HCP count |
 
-### Key dimensions (all searchable)
+</div>
+<div class="col">
 
-`HCP_FULL_NAME` (CS-linked) · `PRODUCT_NAME` · `TERRITORY_NAME` · `REGION_NAME` · `REP_NAME` · `SPECIALTY` · `QUARTER` · `MONTH`
+**Dimensions** — with synonyms & Cortex Search linkage
 
----
+| Dimension | Cortex Search |
+|-----------|:---:|
+| `HCP_NAME` | ✅ `HCP_NAME_SEARCH_SVC` |
+| `TERRITORY` | ✅ `TERRITORY_SEARCH_SVC` |
+| `PRODUCT` | sample values |
+| `SPECIALTY` | sample values |
+| `REGION` | sample values |
+| `REP_NAME` | — |
+| `RX_MONTH` | — |
 
-**Key message:** Define business logic once. Every Cortex Analyst question gets the same correct calculation — no conflicting definitions across reports.
+</div>
+</div>
 
----
-
-## Demo: Cortex Agent in Action
-
-### The agent routes automatically — no user configuration needed
-
----
-
-**Question: "Which territories underperform on Vivitrol TRx this quarter?"**
-→ Agent selects **CommercialAnalyst** (structured metrics question)
-→ Generates SQL on semantic view → returns ranked territory table + bar chart
-
----
-
-**Question: "Find field notes about objections or access issues for Lybalvi"**
-→ Agent selects **FieldIntelligence** (unstructured text retrieval)
-→ Runs semantic search on CALL_NOTES_SEARCH → returns top 5 excerpts with rep, date, and territory
+> Define business logic once — no conflicting metric definitions across reports. Every Cortex Analyst question uses the same correct calculation.
 
 ---
 
-**Question: "Which territories underperform AND why based on field notes?"**
-→ Agent calls **CommercialAnalyst first** for metrics, then **FieldIntelligence** for qualitative context
-→ Combines both into a single coherent answer
+## Demo: Cortex Agent Routing
 
----
+The agent selects the right tool automatically — no user configuration required.
 
-**Key message:** The agent acts as an intelligent router. Users never need to know which tool to call — they just ask the business question.
+| User Question | Tool Used | What Happens |
+|---------------|-----------|-------------|
+| "Which territories underperform on Vivitrol TRx this quarter?" | **CommercialAnalyst** | Text-to-SQL on semantic view → ranked territory table + bar chart |
+| "Find field notes about physician objections to Lybalvi" | **FieldIntelligence** | Semantic search on `CALL_INTEL_SEARCH_SVC` → top 5 rep note excerpts with date and territory |
+| "Which territories underperform AND what are reps saying?" | **Both tools** | Analyst returns metrics; Search retrieves qualitative context; combined into one answer |
+
+<br>
+
+> Routing instruction in agent spec: *"Use CommercialAnalyst for quantitative questions about TRx, NRx, revenue, market share. Use FieldIntelligence for field intelligence, objections, access barriers, and HCP sentiment."*
 
 ---
 
@@ -217,51 +252,56 @@ FROM TABLE(
 
 Navigate to: **Snowsight → AI & ML → Snowflake Intelligence → COMMERCIAL_ANALYTICS_AGENT**
 
-### 10 questions ready for the commercial team:
+<div class="columns">
+<div class="col">
 
 1. Which territories are underperforming on Vivitrol TRx vs. target this quarter?
-2. Show me HCP prescribing trends for Aristada in the Northeast over the last 12 months
-3. Find all psychiatrists in Texas who haven't had a rep call in the last 60 days
-4. What is the formulary access rate for Vivitrol on commercial insurance plans?
+2. Show HCP prescribing trends for Aristada in the Northeast over 12 months
+3. Find all psychiatrists in Texas with no rep call in the last 60 days
+4. What is the formulary access rate for Vivitrol on commercial plans?
 5. Which reps have the highest call-to-prescription conversion rate?
-6. Show me market share by product across all regions for the current year
+
+</div>
+<div class="col">
+
+6. Show market share by product across all regions year-to-date
 7. Find recent field notes about physician objections or access barriers for Lybalvi
-8. Which HCPs in the Midwest have the highest Aristada TRx growth in the last 6 months?
-9. Compare regional performance across all three products year-to-date
-10. Which payers are creating the most access barriers based on rep field reports?
+8. Which HCPs in the Midwest have the highest Aristada TRx growth in 6 months?
+9. Compare regional performance across all three products YTD with a chart
+10. Which payers are creating the most access barriers per rep field reports?
 
----
+</div>
+</div>
 
-**Key message:** Zero-SQL self-service for commercial team members — click a question, get an answer.
+**Zero-SQL self-service for the commercial team — click a question, get an answer.**
 
 ---
 
 ## Why Snowflake for Commercial Analytics
 
-- **All data + AI on one platform** — no ETL to external AI services, no API keys to manage, no data copies leaving Snowflake governance
+- **All data + AI on one platform** — no ETL to external AI services, no API keys, no data copies leaving Snowflake governance
 - **No data movement** — Cortex Search indexes live Snowflake tables; Cortex Analyst queries the semantic view directly
-- **HIPAA-eligible infrastructure** — Snowflake's Business Associate Agreement (BAA) covers the full stack including AI services
-- **Enterprise governance built in** — Role-based access control applies to the agent, the search service, and the underlying tables
-- **Cortex Search replaces external vector databases** — no Pinecone, no Weaviate, no custom embedding pipelines to maintain
-- **Scales with your territory footprint** — add new regions, products, or reps by adding rows to tables; no model retraining required
-- **Auditability** — every agent query is logged in `ACCOUNT_USAGE.QUERY_HISTORY`
+- **HIPAA-eligible infrastructure** — Snowflake's BAA covers the full stack including Cortex AI services
+- **Enterprise governance built in** — RBAC applies uniformly to the agent, search service, and underlying tables
+- **Replaces external vector databases** — no Pinecone, Weaviate, or custom embedding pipelines to maintain or pay for separately
+- **Scales with your territory footprint** — add regions, products, or reps by adding rows; no model retraining required
+- **Full auditability** — every agent query is logged in `ACCOUNT_USAGE.QUERY_HISTORY`
 
 ---
 
 ## Next Steps
 
-1. **Run the demo scripts** in your Snowflake account — all six scripts run in under 10 minutes with synthetic data
+1. **Run the demo scripts** — six numbered SQL scripts run in under 10 minutes on your Snowflake account
 
-2. **Connect real commercial data** — replace synthetic inserts with IQVIA/Symphony Health Rx feeds, Veeva CRM call exports, and MCO formulary files
+2. **Connect real commercial data** — replace synthetic inserts with IQVIA/Symphony Rx feeds, Veeva CRM call exports, and MCO formulary files
 
-3. **Extend the Semantic View** — add quota attainment %, call frequency targets, reach and frequency metrics, managed care penetration
+3. **Extend the Semantic View** — add quota attainment %, call frequency targets, reach & frequency metrics, managed care penetration
 
-4. **Deploy to the commercial team** — grant `USAGE` on the agent to your commercial analyst role; share the Snowflake Intelligence URL
+4. **Deploy to the commercial team** — `GRANT USAGE ON AGENT` to your commercial analyst role; share the Snowflake Intelligence URL
 
-5. **Iterate on sample questions** — after the first week of usage, review the most common questions and refine the agent instructions and sample question list
+5. **Iterate on sample questions** — after the first week, review top questions and refine the agent instructions and sample question list
 
----
+<br>
 
-*Contact your Snowflake account team or SE to get started.*
-
-`ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT`
+*Contact your Snowflake account team to get started.*
+&nbsp;&nbsp;`github.com/sfc-gh-moahmed/pharma-commercial-cortex-demo`
