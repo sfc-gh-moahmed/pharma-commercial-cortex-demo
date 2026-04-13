@@ -133,23 +133,11 @@ INSERT INTO TERRITORIES VALUES
 (702,'Los Angeles South',  'Pacific District',        'West Region',     'Pacific Area','CA',14000),
 (703,'San Francisco',      'Pacific District',        'West Region',     'Pacific Area','CA',13500),
 (704,'San Diego',          'Pacific District',        'West Region',     'Pacific Area','CA',12000),
-(705,'Seattle',            'Pacific District',        'West Region',     'Pacific Area','WA',11000),
-(706,'Portland OR',        'Pacific District',        'West Region',     'Pacific Area','OR', 9500);
+(705,'Seattle',            'Pacific District',        'West Region',     'Pacific Area','WA',11000);
 
 
 -- ── 3. SALES REPS ─────────────────────────────────────────────────────────────
 -- 50 reps, one per territory, with realistic names
-CREATE OR REPLACE TABLE SALES_REPS (
-    REP_ID              NUMBER       NOT NULL PRIMARY KEY,
-    REP_NAME            VARCHAR(100) NOT NULL,
-    TERRITORY_ID        NUMBER       REFERENCES TERRITORIES(TERRITORY_ID),
-    REGION              VARCHAR(100),
-    DISTRICT            VARCHAR(100),
-    HIRE_DATE           DATE,
-    ANNUAL_QUOTA_UNITS  NUMBER(10,0),
-    MANAGER_NAME        VARCHAR(100)
-);
-
 CREATE OR REPLACE TABLE SALES_REPS AS
 WITH TERRITORY_LIST AS (
     SELECT TERRITORY_ID, TERRITORY_NAME, DISTRICT, REGION, ANNUAL_TARGET_UNITS,
@@ -212,6 +200,10 @@ JOIN FIRST_NAMES  f ON t.RN - 1 = f.FN_IDX
 JOIN LAST_NAMES   l ON t.RN - 1 = l.LN_IDX
 JOIN MANAGERS     m ON MOD(t.RN - 1, 7) = m.MGR_IDX;
 
+ALTER TABLE SALES_REPS ADD CONSTRAINT PK_SALES_REPS PRIMARY KEY (REP_ID);
+ALTER TABLE SALES_REPS ADD CONSTRAINT FK_SALES_REPS_TERRITORY
+    FOREIGN KEY (TERRITORY_ID) REFERENCES TERRITORIES(TERRITORY_ID);
+
 
 -- ── 4. HCPS ───────────────────────────────────────────────────────────────────
 -- 500 Healthcare Providers: psychiatrists, addiction specialists, and others
@@ -267,7 +259,7 @@ SELECT
         ELSE        'Neurology'
     END                                              AS SPECIALTY,
     c.CITY_VAL                                       AS CITY,
-    t.PRIMARY_STATE                                  AS STATE,
+    ter.PRIMARY_STATE                                AS STATE,
     LPAD(CAST(10000 + MOD(n.N * 37, 89999) AS VARCHAR), 5, '0') AS ZIP,
     t.TERRITORY_ID,
     CASE MOD(n.N, 5)
@@ -284,6 +276,8 @@ JOIN LAST_NAMES   ln ON FLOOR((n.N - 1) / 25) = ln.LN_IDX
 JOIN TERRITORY_MAP t  ON MOD(n.N - 1, 50) = t.T_IDX
 JOIN TERRITORIES  ter ON t.TERRITORY_ID = ter.TERRITORY_ID
 JOIN CITIES       c   ON MOD(n.N - 1, 30) = c.CITY_IDX;
+
+ALTER TABLE HCPS ADD CONSTRAINT PK_HCPS PRIMARY KEY (HCP_ID);
 
 
 -- ── 5. PRESCRIPTIONS ──────────────────────────────────────────────────────────
@@ -349,6 +343,8 @@ SELECT
     END) * LIST_PRICE_USD                               AS REVENUE_USD
 FROM COMBOS;
 
+ALTER TABLE PRESCRIPTIONS ADD CONSTRAINT PK_PRESCRIPTIONS PRIMARY KEY (PRESCRIPTION_ID);
+
 
 -- ── 6. CALL ACTIVITY ──────────────────────────────────────────────────────────
 -- Field rep calls on HCPs, Jan 2023 – Jun 2025 (~15,000 rows)
@@ -394,6 +390,8 @@ FROM COMBOS c
 JOIN CALL_TYPES  ct ON MOD(c.HCP_ID + c.CALL_ID, 5) = ct.CT_IDX
 JOIN OUTCOMES    oc ON MOD(c.HCP_ID * 3 + c.CALL_ID, 5) = oc.OC_IDX
 JOIN PRODUCTS_D  pd ON MOD(c.HCP_ID + MONTH(c.CALL_DATE), 5) = pd.PD_IDX;
+
+ALTER TABLE CALL_ACTIVITY ADD CONSTRAINT PK_CALL_ACTIVITY PRIMARY KEY (CALL_ID);
 
 
 -- ── 7. MARKET ACCESS ──────────────────────────────────────────────────────────
@@ -455,6 +453,8 @@ CROSS JOIN PRODUCTS_A pr
 CROSS JOIN QUARTERS q
 JOIN FORMULARY_STATUS fs ON MOD(py.P_IDX + pr.PRODUCT_ID * 3 + q.Q_IDX, 5) = fs.FS_IDX;
 
+ALTER TABLE MARKET_ACCESS ADD CONSTRAINT PK_MARKET_ACCESS PRIMARY KEY (ACCESS_ID);
+
 
 -- ── 8. CALL NOTES ─────────────────────────────────────────────────────────────
 -- Rich free-text rep field notes — used by Cortex Search (standalone + agent tool)
@@ -508,9 +508,9 @@ INSERT INTO CALL_NOTES (NOTE_ID, REP_ID, HCP_ID, NOTE_DATE, NOTE_TEXT) VALUES
  'Dr. Robinson in Minneapolis - addiction medicine. State Medicaid recently added Vivitrol to preferred formulary in Minnesota - great news. He sees 40+ patients/month in his MAT clinic. Expecting TRx to grow significantly H2 2025. Key territory win for this region.'),
 (20, 20, 476, '2025-02-18',
  'Dr. Clark in Kansas City - psychiatry. Raised concerns about Lybalvi patient copay burden. Average commercial patient paying $200+/month. Reviewed copay assistance card - reduces to $0. He was receptive. Also discussed Lybalvi ENLIGHTEN-1 efficacy data vs standard olanzapine.'),
-(21, 21, 501, '2025-03-14',
+(21, 21, 491, '2025-03-14',
  'Dr. Roberts (note: misspelled in CRM as Robers) in Oklahoma City - addiction medicine. Very engaged with Vivitrol data for alcohol use disorder. Mentioned that competitor naltrexone ER is being pushed by local PBM. Shared Vivitrol dosing convenience and pharmacokinetic data.'),
-(22, 22, 526, '2025-01-25',
+(22, 22, 492, '2025-01-25',
  'Dr. Gonzalez in New Orleans - psychiatry. High Medicaid population. Concerned about access for Aristada with Louisiana Medicaid step-therapy requirement. Connected him with Alkermes patient access team. Plans to use Aristada for privately insured patients while working access issues.'),
 (23, 23, 75, '2025-03-07',
  'Called on Dr. Lee in Baltimore - internal medicine (not traditional prescriber). Discussing referral relationships with addiction specialists. This is a referral opportunity - he sees patients post-hospitalization for overdose. Can channel patients to addiction specialists who prescribe Vivitrol.'),
