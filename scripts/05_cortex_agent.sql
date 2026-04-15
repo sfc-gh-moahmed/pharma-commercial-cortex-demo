@@ -302,32 +302,32 @@ GRANT USAGE ON AGENT ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT
 -- Test 1: Quantitative question (routes to CommercialAnalyst)
 SELECT SNOWFLAKE.CORTEX.DATA_AGENT_RUN(
     'ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT',
-    [{'role': 'user', 'content': 'Which products had the highest TRx growth in the last 6 months?'}]
+    PARSE_JSON('[{"role": "user", "content": "Which products had the highest TRx growth in the last 6 months?"}]')
 ) AS agent_response;
 
 
 -- Test 2: Qualitative question (routes to FieldIntelligence)
 SELECT SNOWFLAKE.CORTEX.DATA_AGENT_RUN(
     'ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT',
-    [{'role': 'user', 'content': 'What are field reps reporting about formulary access barriers for Vivitrol?'}]
+    PARSE_JSON('[{"role": "user", "content": "What are field reps reporting about formulary access barriers for Vivitrol?"}]')
 ) AS agent_response;
 
 
 -- Test 3: Blended question (routes to both tools)
 SELECT SNOWFLAKE.CORTEX.DATA_AGENT_RUN(
     'ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT',
-    [{'role': 'user', 'content': 'Which territories are underperforming on Aristada TRx, and what are reps saying in those territories?'}]
+    PARSE_JSON('[{"role": "user", "content": "Which territories are underperforming on Aristada TRx, and what are reps saying in those territories?"}]')
 ) AS agent_response;
 
 
 -- Test 4: Multi-turn conversation (pass prior context in the messages array)
 SELECT SNOWFLAKE.CORTEX.DATA_AGENT_RUN(
     'ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT',
-    [
-        {'role': 'user',      'content': 'Show me top 10 Vivitrol prescribers in the Southeast'},
-        {'role': 'assistant', 'content': '[prior response from agent here]'},
-        {'role': 'user',      'content': 'Now pull any call notes for those HCPs from the last 90 days'}
-    ]
+    PARSE_JSON('[
+        {"role": "user",      "content": "Show me top 10 Vivitrol prescribers in the Southeast"},
+        {"role": "assistant", "content": "[prior response from agent here]"},
+        {"role": "user",      "content": "Now pull any call notes for those HCPs from the last 90 days"}
+    ]')
 ) AS agent_response;
 -- Multi-turn passes the full conversation history so the agent can maintain
 -- context across follow-up questions — essential for drill-down workflows.

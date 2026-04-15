@@ -104,11 +104,9 @@ CREATE OR REPLACE CORTEX SEARCH SERVICE ALKERMES_DEMO.COMMERCIAL.CALL_INTEL_SEAR
 -- ============================================================
 -- SECTION 3 — DEMO QUERIES (STANDALONE SEARCH_PREVIEW)
 -- ============================================================
--- SNOWFLAKE.CORTEX.SEARCH_PREVIEW takes four arguments:
---   1. database name
---   2. schema name
---   3. service name
---   4. JSON config string: { query, columns, limit, [filter] }
+-- SNOWFLAKE.CORTEX.SEARCH_PREVIEW takes two arguments:
+--   1. fully-qualified service name (database.schema.service)
+--   2. JSON string: { query, columns, limit, [filter] }
 --
 -- Results are returned as a JSON string; wrap in PARSE_JSON to
 -- navigate the result set or flatten with LATERAL FLATTEN.
@@ -124,14 +122,8 @@ CREATE OR REPLACE CORTEX SEARCH SERVICE ALKERMES_DEMO.COMMERCIAL.CALL_INTEL_SEAR
 -- ──────────────────────────────────────────────────────────────
 SELECT PARSE_JSON(
     SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
-        'ALKERMES_DEMO',
-        'COMMERCIAL',
-        'HCP_PROFILE_SEARCH_SVC',
-        OBJECT_CONSTRUCT(
-            'query',   'Dr. Andersen',
-            'columns', ARRAY_CONSTRUCT('HCP_FULL_NAME', 'SPECIALTY', 'CITY', 'STATE', 'NPI', 'HCP_TIER'),
-            'limit',   5
-        )::VARCHAR
+        'ALKERMES_DEMO.COMMERCIAL.HCP_PROFILE_SEARCH_SVC',
+        '{"query": "Dr. Andersen", "columns": ["HCP_FULL_NAME", "SPECIALTY", "CITY", "STATE", "NPI", "HCP_TIER"], "limit": 5}'
     )
 ) AS search_results;
 -- Expected: Returns Dr. Anderson (and similar names) despite the misspelling.
@@ -147,14 +139,8 @@ SELECT PARSE_JSON(
 -- ──────────────────────────────────────────────────────────────
 SELECT PARSE_JSON(
     SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
-        'ALKERMES_DEMO',
-        'COMMERCIAL',
-        'HCP_PROFILE_SEARCH_SVC',
-        OBJECT_CONSTRUCT(
-            'query',   'addiction specialist Texas',
-            'columns', ARRAY_CONSTRUCT('HCP_FULL_NAME', 'SPECIALTY', 'CITY', 'STATE', 'NPI', 'HCP_TIER'),
-            'limit',   10
-        )::VARCHAR
+        'ALKERMES_DEMO.COMMERCIAL.HCP_PROFILE_SEARCH_SVC',
+        '{"query": "addiction specialist Texas", "columns": ["HCP_FULL_NAME", "SPECIALTY", "CITY", "STATE", "NPI", "HCP_TIER"], "limit": 10}'
     )
 ) AS search_results;
 -- Expected: HCPs whose specialty is Addiction Medicine or similar, located in TX cities.
@@ -170,14 +156,8 @@ SELECT PARSE_JSON(
 -- ──────────────────────────────────────────────────────────────
 SELECT PARSE_JSON(
     SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
-        'ALKERMES_DEMO',
-        'COMMERCIAL',
-        'HCP_PROFILE_SEARCH_SVC',
-        OBJECT_CONSTRUCT(
-            'query',   'Dr. Martins psychiatry',
-            'columns', ARRAY_CONSTRUCT('HCP_FULL_NAME', 'SPECIALTY', 'CITY', 'STATE', 'NPI', 'HCP_TIER'),
-            'limit',   5
-        )::VARCHAR
+        'ALKERMES_DEMO.COMMERCIAL.HCP_PROFILE_SEARCH_SVC',
+        '{"query": "Dr. Martins psychiatry", "columns": ["HCP_FULL_NAME", "SPECIALTY", "CITY", "STATE", "NPI", "HCP_TIER"], "limit": 5}'
     )
 ) AS search_results;
 -- Expected: Psychiatrists with last name Martinez, Martin, Martinsen, etc.
@@ -193,14 +173,8 @@ SELECT PARSE_JSON(
 -- ──────────────────────────────────────────────────────────────
 SELECT PARSE_JSON(
     SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
-        'ALKERMES_DEMO',
-        'COMMERCIAL',
-        'HCP_PROFILE_SEARCH_SVC',
-        OBJECT_CONSTRUCT(
-            'query',   'Tier 1 psychiatrist high value',
-            'columns', ARRAY_CONSTRUCT('HCP_FULL_NAME', 'SPECIALTY', 'CITY', 'STATE', 'NPI', 'HCP_TIER'),
-            'limit',   10
-        )::VARCHAR
+        'ALKERMES_DEMO.COMMERCIAL.HCP_PROFILE_SEARCH_SVC',
+        '{"query": "Tier 1 psychiatrist high value", "columns": ["HCP_FULL_NAME", "SPECIALTY", "CITY", "STATE", "NPI", "HCP_TIER"], "limit": 10}'
     )
 ) AS search_results;
 -- Expected: Top-tier psychiatrists ranked by semantic closeness to "Tier 1 high value".
@@ -216,14 +190,8 @@ SELECT PARSE_JSON(
 -- ──────────────────────────────────────────────────────────────
 SELECT PARSE_JSON(
     SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
-        'ALKERMES_DEMO',
-        'COMMERCIAL',
-        'CALL_INTEL_SEARCH_SVC',
-        OBJECT_CONSTRUCT(
-            'query',   'access barriers Blue Cross formulary',
-            'columns', ARRAY_CONSTRUCT('NOTE_TEXT', 'NOTE_DATE', 'HCP_ID', 'REP_ID'),
-            'limit',   5
-        )::VARCHAR
+        'ALKERMES_DEMO.COMMERCIAL.CALL_INTEL_SEARCH_SVC',
+        '{"query": "access barriers Blue Cross formulary", "columns": ["NOTE_TEXT", "NOTE_DATE", "HCP_ID", "REP_ID"], "limit": 5}'
     )
 ) AS search_results;
 -- Expected: Call notes mentioning BCBS, formulary restrictions, prior auth requirements,
@@ -240,14 +208,8 @@ SELECT PARSE_JSON(
 -- ──────────────────────────────────────────────────────────────
 SELECT PARSE_JSON(
     SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
-        'ALKERMES_DEMO',
-        'COMMERCIAL',
-        'CALL_INTEL_SEARCH_SVC',
-        OBJECT_CONSTRUCT(
-            'query',   'physician preference competitor switching',
-            'columns', ARRAY_CONSTRUCT('NOTE_TEXT', 'NOTE_DATE', 'HCP_ID', 'REP_ID'),
-            'limit',   5
-        )::VARCHAR
+        'ALKERMES_DEMO.COMMERCIAL.CALL_INTEL_SEARCH_SVC',
+        '{"query": "physician preference competitor switching", "columns": ["NOTE_TEXT", "NOTE_DATE", "HCP_ID", "REP_ID"], "limit": 5}'
     )
 ) AS search_results;
 -- Expected: Notes where reps recorded HCP preferences for competing products,
@@ -264,14 +226,8 @@ SELECT PARSE_JSON(
 -- ──────────────────────────────────────────────────────────────
 SELECT PARSE_JSON(
     SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
-        'ALKERMES_DEMO',
-        'COMMERCIAL',
-        'CALL_INTEL_SEARCH_SVC',
-        OBJECT_CONSTRUCT(
-            'query',   'patient assistance copay program',
-            'columns', ARRAY_CONSTRUCT('NOTE_TEXT', 'NOTE_DATE', 'HCP_ID', 'REP_ID'),
-            'limit',   5
-        )::VARCHAR
+        'ALKERMES_DEMO.COMMERCIAL.CALL_INTEL_SEARCH_SVC',
+        '{"query": "patient assistance copay program", "columns": ["NOTE_TEXT", "NOTE_DATE", "HCP_ID", "REP_ID"], "limit": 5}'
     )
 ) AS search_results;
 -- Expected: Notes referencing VIVITROL Savings Card, patient assistance programs,
@@ -289,14 +245,8 @@ SELECT PARSE_JSON(
 -- ──────────────────────────────────────────────────────────────
 SELECT PARSE_JSON(
     SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
-        'ALKERMES_DEMO',
-        'COMMERCIAL',
-        'CALL_INTEL_SEARCH_SVC',
-        OBJECT_CONSTRUCT(
-            'query',   'sample request Vivitrol starter pack',
-            'columns', ARRAY_CONSTRUCT('NOTE_TEXT', 'NOTE_DATE', 'HCP_ID', 'REP_ID'),
-            'limit',   5
-        )::VARCHAR
+        'ALKERMES_DEMO.COMMERCIAL.CALL_INTEL_SEARCH_SVC',
+        '{"query": "sample request Vivitrol starter pack", "columns": ["NOTE_TEXT", "NOTE_DATE", "HCP_ID", "REP_ID"], "limit": 5}'
     )
 ) AS search_results;
 -- Expected: Notes where reps recorded HCP requests for starter kits,
@@ -322,14 +272,8 @@ FROM
     LATERAL FLATTEN(
         INPUT => PARSE_JSON(
             SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
-                'ALKERMES_DEMO',
-                'COMMERCIAL',
-                'HCP_PROFILE_SEARCH_SVC',
-                OBJECT_CONSTRUCT(
-                    'query',   'addiction medicine Ohio',
-                    'columns', ARRAY_CONSTRUCT('HCP_FULL_NAME', 'SPECIALTY', 'CITY', 'STATE', 'NPI', 'HCP_TIER'),
-                    'limit',   10
-                )::VARCHAR
+                'ALKERMES_DEMO.COMMERCIAL.HCP_PROFILE_SEARCH_SVC',
+                '{"query": "addiction medicine Ohio", "columns": ["HCP_FULL_NAME", "SPECIALTY", "CITY", "STATE", "NPI", "HCP_TIER"], "limit": 10}'
             )
         ):results
     ) AS result;
