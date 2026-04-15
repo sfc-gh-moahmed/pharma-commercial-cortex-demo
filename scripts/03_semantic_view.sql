@@ -141,7 +141,7 @@ CREATE OR REPLACE SEMANTIC VIEW ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_SV
 
     -- ── Product Dimensions ────────────────────────────────────────────────────
 
-    products.PRODUCT_NAME AS PRODUCT
+    products.PRODUCT_NAME AS PRODUCT_NAME
       COMMENT = 'Product brand name (e.g. VIVITROL, ARISTADA)',
 
     products.THERAPEUTIC_AREA AS THERAPEUTIC_AREA
@@ -151,7 +151,7 @@ CREATE OR REPLACE SEMANTIC VIEW ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_SV
 
     -- High-cardinality: territory names often contain internal codes unknown to
     -- end users.  Cortex Search resolves "Boston territory" → "NE-Boston-114".
-    territories.TERRITORY_NAME AS TERRITORY
+    territories.TERRITORY_NAME AS TERRITORY_NAME
       COMMENT = 'Sales territory name - uses Cortex Search for fuzzy matching'
       WITH CORTEX SEARCH SERVICE ALKERMES_DEMO.COMMERCIAL.TERRITORY_SEARCH_SVC,
 
@@ -227,7 +227,7 @@ DESCRIBE SEMANTIC VIEW ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_SV;
 SELECT *
 FROM SEMANTIC_VIEW(
   ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_SV
-  DIMENSIONS  products.PRODUCT,
+  DIMENSIONS  products.PRODUCT_NAME,
               territories.REGION
   METRICS     prescriptions.total_trx
 )
@@ -237,7 +237,7 @@ ORDER BY total_trx DESC;
 SELECT *
 FROM SEMANTIC_VIEW(
   ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_SV
-  DIMENSIONS  products.PRODUCT
+  DIMENSIONS  products.PRODUCT_NAME
   METRICS     prescriptions.total_trx,
               prescriptions.total_market_trx,
               prescriptions.market_share_pct
@@ -248,7 +248,7 @@ ORDER BY market_share_pct DESC;
 SELECT *
 FROM SEMANTIC_VIEW(
   ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_SV
-  DIMENSIONS  territories.TERRITORY,
+  DIMENSIONS  territories.TERRITORY_NAME,
               territories.REGION
   METRICS     prescriptions.total_trx,
               prescriptions.active_hcps,
