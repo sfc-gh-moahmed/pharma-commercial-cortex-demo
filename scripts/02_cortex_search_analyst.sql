@@ -130,9 +130,7 @@ SHOW CORTEX SEARCH SERVICES IN SCHEMA ALKERMES_DEMO.COMMERCIAL;
 -- Demo 4a: Fuzzy HCP name lookup — simulates "Show TRx for Dr. Andersen"
 -- The user typed "Dr. Andersen"; the service resolves to matching stored names.
 SELECT SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
-  'ALKERMES_DEMO',
-  'COMMERCIAL',
-  'HCP_NAME_SEARCH_SVC',
+  'ALKERMES_DEMO.COMMERCIAL.HCP_NAME_SEARCH_SVC',
   OBJECT_CONSTRUCT(
     'query',   'Dr. Andersen',
     'columns', ARRAY_CONSTRUCT('HCP_FULL_NAME'),
@@ -142,9 +140,7 @@ SELECT SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
 
 -- Demo 4b: Partial surname lookup — simulates "Prescriptions for Patel"
 SELECT SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
-  'ALKERMES_DEMO',
-  'COMMERCIAL',
-  'HCP_NAME_SEARCH_SVC',
+  'ALKERMES_DEMO.COMMERCIAL.HCP_NAME_SEARCH_SVC',
   OBJECT_CONSTRUCT(
     'query',   'Patel psychiatrist',
     'columns', ARRAY_CONSTRUCT('HCP_FULL_NAME'),
@@ -154,9 +150,7 @@ SELECT SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
 
 -- Demo 4c: Territory fuzzy lookup — simulates "Boston territory performance"
 SELECT SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
-  'ALKERMES_DEMO',
-  'COMMERCIAL',
-  'TERRITORY_SEARCH_SVC',
+  'ALKERMES_DEMO.COMMERCIAL.TERRITORY_SEARCH_SVC',
   OBJECT_CONSTRUCT(
     'query',   'Boston territory',
     'columns', ARRAY_CONSTRUCT('TERRITORY_NAME'),
@@ -166,9 +160,7 @@ SELECT SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
 
 -- Demo 4d: Territory lookup by region keyword
 SELECT SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
-  'ALKERMES_DEMO',
-  'COMMERCIAL',
-  'TERRITORY_SEARCH_SVC',
+  'ALKERMES_DEMO.COMMERCIAL.TERRITORY_SEARCH_SVC',
   OBJECT_CONSTRUCT(
     'query',   'Southeast Ohio',
     'columns', ARRAY_CONSTRUCT('TERRITORY_NAME'),
