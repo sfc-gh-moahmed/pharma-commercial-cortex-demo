@@ -294,7 +294,9 @@ GRANT USAGE ON AGENT ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT
 -- SECTION 4 — TEST THE AGENT VIA SQL
 -- ============================================================
 -- DATA_AGENT_RUN invokes the agent programmatically from SQL.
--- The second argument is a JSON array of conversation messages.
+-- The second argument is a JSON request body: {"messages": [...]}
+-- Each message has role ("user"/"assistant") and content as a typed
+-- array: [{"type": "text", "text": "..."}]
 -- Useful for: automated testing, embedding agent calls in
 -- stored procedures, and pipeline-driven analytics workflows.
 -- ============================================================
@@ -302,28 +304,28 @@ GRANT USAGE ON AGENT ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT
 -- Test 1: Quantitative question (routes to CommercialAnalyst)
 SELECT SNOWFLAKE.CORTEX.DATA_AGENT_RUN(
     'ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT',
-    '[{"role": "user", "content": [{"type": "text", "text": "Which products had the highest TRx growth in the last 6 months?"}]}]'
+    '{"messages": [{"role": "user", "content": [{"type": "text", "text": "Which products had the highest TRx growth in the last 6 months?"}]}]}'
 ) AS agent_response;
 
 
 -- Test 2: Qualitative question (routes to FieldIntelligence)
 SELECT SNOWFLAKE.CORTEX.DATA_AGENT_RUN(
     'ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT',
-    '[{"role": "user", "content": [{"type": "text", "text": "What are field reps reporting about formulary access barriers for Vivitrol?"}]}]'
+    '{"messages": [{"role": "user", "content": [{"type": "text", "text": "What are field reps reporting about formulary access barriers for Vivitrol?"}]}]}'
 ) AS agent_response;
 
 
 -- Test 3: Blended question (routes to both tools)
 SELECT SNOWFLAKE.CORTEX.DATA_AGENT_RUN(
     'ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT',
-    '[{"role": "user", "content": [{"type": "text", "text": "Which territories are underperforming on Aristada TRx, and what are reps saying in those territories?"}]}]'
+    '{"messages": [{"role": "user", "content": [{"type": "text", "text": "Which territories are underperforming on Aristada TRx, and what are reps saying in those territories?"}]}]}'
 ) AS agent_response;
 
 
 -- Test 4: Multi-turn conversation (pass prior context in the messages array)
 SELECT SNOWFLAKE.CORTEX.DATA_AGENT_RUN(
     'ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT',
-    '[{"role": "user", "content": [{"type": "text", "text": "Show me top 10 Vivitrol prescribers in the Southeast"}]}, {"role": "assistant", "content": [{"type": "text", "text": "[prior response from agent here]"}]}, {"role": "user", "content": [{"type": "text", "text": "Now pull any call notes for those HCPs from the last 90 days"}]}]'
+    '{"messages": [{"role": "user", "content": [{"type": "text", "text": "Show me top 10 Vivitrol prescribers in the Southeast"}]}, {"role": "assistant", "content": [{"type": "text", "text": "[prior response from agent here]"}]}, {"role": "user", "content": [{"type": "text", "text": "Now pull any call notes for those HCPs from the last 90 days"}]}]}'
 ) AS agent_response;
 -- Multi-turn passes the full conversation history so the agent can maintain
 -- context across follow-up questions — essential for drill-down workflows.
