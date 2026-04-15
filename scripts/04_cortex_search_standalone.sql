@@ -41,7 +41,7 @@
 SET demo_db        = 'ALKERMES_DEMO';
 SET demo_schema    = 'COMMERCIAL';
 SET demo_warehouse = 'COMMERCIAL_AGENT_NON_CONF_R_WH';
-SET demo_role      = 'SYSADMIN';
+SET demo_role      = 'COMMERCIAL_AGENT_NON_CONF_R';
 
 USE ROLE      IDENTIFIER($demo_role);
 USE DATABASE  IDENTIFIER($demo_db);

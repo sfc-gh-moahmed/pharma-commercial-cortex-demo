@@ -184,7 +184,7 @@ $$;
   To make the agent available to business users in Snowflake Intelligence,
   grant USAGE on the agent to the appropriate role(s).
 
-  Replace <user_role> with the role assigned to your commercial team,
+  Replace COMMERCIAL_AGENT_NON_CONF_R with the role assigned to your commercial team,
   for example COMMERCIAL_ANALYST_ROLE or SYSADMIN for demo purposes.
 
   To access via Snowflake Intelligence:
@@ -192,20 +192,20 @@ $$;
 
   Share agent with users:
     GRANT USAGE ON AGENT ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT
-      TO ROLE <user_role>;
+      TO ROLE COMMERCIAL_AGENT_NON_CONF_R;
 
   Grant read access to the underlying objects if not already granted:
-    GRANT USAGE ON DATABASE ALKERMES_DEMO TO ROLE <user_role>;
-    GRANT USAGE ON SCHEMA ALKERMES_DEMO.COMMERCIAL TO ROLE <user_role>;
-    GRANT SELECT ON ALL TABLES IN SCHEMA ALKERMES_DEMO.COMMERCIAL TO ROLE <user_role>;
+    GRANT USAGE ON DATABASE ALKERMES_DEMO TO ROLE COMMERCIAL_AGENT_NON_CONF_R;
+    GRANT USAGE ON SCHEMA ALKERMES_DEMO.COMMERCIAL TO ROLE COMMERCIAL_AGENT_NON_CONF_R;
+    GRANT SELECT ON ALL TABLES IN SCHEMA ALKERMES_DEMO.COMMERCIAL TO ROLE COMMERCIAL_AGENT_NON_CONF_R;
     GRANT USAGE ON CORTEX SEARCH SERVICE ALKERMES_DEMO.COMMERCIAL.CALL_NOTES_SEARCH
-      TO ROLE <user_role>;
+      TO ROLE COMMERCIAL_AGENT_NON_CONF_R;
 ================================================================================
 */
 
--- Uncomment and run after replacing <user_role>:
+-- Uncomment and run after replacing COMMERCIAL_AGENT_NON_CONF_R:
 -- GRANT USAGE ON AGENT ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT
---   TO ROLE <user_role>;
+--   TO ROLE COMMERCIAL_AGENT_NON_CONF_R;
 
 
 -- ============================================================

@@ -8,7 +8,7 @@
 ║  DATABASE : ALKERMES_DEMO       (change to your preferred database name)     ║
 ║  SCHEMA   : COMMERCIAL          (change to your preferred schema name)       ║
 ║  WAREHOUSE: COMMERCIAL_AGENT_NON_CONF_R_WH           (change to your warehouse)                   ║
-║  ROLE     : ACCOUNTADMIN        (change to SYSADMIN or your admin role)      ║
+║  ROLE     : COMMERCIAL_AGENT_NON_CONF_R        (change to SYSADMIN or your admin role)      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
   Run order: 01 → 02 → 03 → 04 → 05 → 06
@@ -16,7 +16,7 @@
 */
 
 -- ── 0. SETUP ──────────────────────────────────────────────────────────────────
-USE ROLE ACCOUNTADMIN;
+USE ROLE COMMERCIAL_AGENT_NON_CONF_R;
 
 USE WAREHOUSE COMMERCIAL_AGENT_NON_CONF_R_WH;
 

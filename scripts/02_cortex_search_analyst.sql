@@ -8,7 +8,7 @@
 -- DATABASE  : ALKERMES_DEMO
 -- SCHEMA    : COMMERCIAL
 -- WAREHOUSE : COMMERCIAL_AGENT_NON_CONF_R_WH        (change to your warehouse)
--- ROLE      : SYSADMIN           (or a role with CREATE CORTEX SEARCH SERVICE)
+-- ROLE      : COMMERCIAL_AGENT_NON_CONF_R
 -- ──────────────────────────────────────────────────────────────────────────────
 --
 -- PURPOSE
@@ -52,7 +52,7 @@
 --
 -- ═══════════════════════════════════════════════════════════════════════════════
 
-USE ROLE    SYSADMIN;
+USE ROLE    COMMERCIAL_AGENT_NON_CONF_R;
 USE DATABASE ALKERMES_DEMO;
 USE SCHEMA   COMMERCIAL;
 USE WAREHOUSE COMMERCIAL_AGENT_NON_CONF_R_WH;
