@@ -126,9 +126,9 @@ CREATE OR REPLACE SEMANTIC VIEW ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_SV
     -- High-cardinality: thousands of physician names.
     -- Cortex Search resolves "Dr. Patel" → "Patel, Arun K MD" automatically.
     hcps.HCP_FULL_NAME AS HCP_FULL_NAME
+      COMMENT = 'Full name of the HCP - uses Cortex Search for fuzzy name matching'
       WITH SYNONYMS = ('doctor', 'physician', 'prescriber', 'HCP', 'provider', 'healthcare provider')
-      WITH CORTEX SEARCH SERVICE ALKERMES_DEMO.COMMERCIAL.HCP_NAME_SEARCH_SVC
-      COMMENT = 'Full name of the HCP - uses Cortex Search for fuzzy name matching',
+      WITH CORTEX SEARCH SERVICE ALKERMES_DEMO.COMMERCIAL.HCP_NAME_SEARCH_SVC,
 
     hcps.SPECIALTY AS SPECIALTY
       WITH SYNONYMS = ('specialty', 'medical specialty', 'doctor specialty', 'physician specialty')
@@ -159,9 +159,9 @@ CREATE OR REPLACE SEMANTIC VIEW ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_SV
     -- High-cardinality: territory names often contain internal codes unknown to
     -- end users.  Cortex Search resolves "Boston territory" → "NE-Boston-114".
     territories.TERRITORY_NAME AS TERRITORY
+      COMMENT = 'Sales territory name - uses Cortex Search for fuzzy matching'
       WITH SYNONYMS = ('territory', 'area', 'sales territory', 'territory name', 'field territory')
-      WITH CORTEX SEARCH SERVICE ALKERMES_DEMO.COMMERCIAL.TERRITORY_SEARCH_SVC
-      COMMENT = 'Sales territory name - uses Cortex Search for fuzzy matching',
+      WITH CORTEX SEARCH SERVICE ALKERMES_DEMO.COMMERCIAL.TERRITORY_SEARCH_SVC,
 
     territories.REGION AS REGION
       WITH SYNONYMS = ('region', 'geographic region', 'sales region', 'national region')
