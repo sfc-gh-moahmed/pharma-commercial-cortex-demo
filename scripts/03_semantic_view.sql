@@ -115,9 +115,9 @@ CREATE OR REPLACE SEMANTIC VIEW ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_SV
 
   -- ─────────────────────────────────────────────────────────────────────────────
   -- DIMENSIONS: categorical / text / date attributes used for filtering and
-  -- grouping.  Synonyms teach the LLM how users naturally phrase each concept.
-  -- Cortex Search services are attached to high-cardinality name columns so the
-  -- LLM can resolve fuzzy / partial string input to canonical stored values.
+  -- grouping.  Cortex Search services are attached to high-cardinality name
+  -- columns so the LLM can resolve fuzzy / partial string input to canonical
+  -- stored values.
   -- ─────────────────────────────────────────────────────────────────────────────
   DIMENSIONS (
 
@@ -127,32 +127,25 @@ CREATE OR REPLACE SEMANTIC VIEW ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_SV
     -- Cortex Search resolves "Dr. Patel" → "Patel, Arun K MD" automatically.
     hcps.HCP_FULL_NAME AS HCP_FULL_NAME
       COMMENT = 'Full name of the HCP - uses Cortex Search for fuzzy name matching'
-      WITH SYNONYMS = ('doctor', 'physician', 'prescriber', 'HCP', 'provider', 'healthcare provider')
       WITH CORTEX SEARCH SERVICE ALKERMES_DEMO.COMMERCIAL.HCP_NAME_SEARCH_SVC,
 
     hcps.SPECIALTY AS SPECIALTY
-      COMMENT = 'Medical specialty of the HCP (e.g. Psychiatry, Neurology, Addiction Medicine)'
-      WITH SYNONYMS = ('specialty', 'medical specialty', 'doctor specialty', 'physician specialty'),
+      COMMENT = 'Medical specialty of the HCP (e.g. Psychiatry, Neurology, Addiction Medicine)',
 
-    hcps.CITY AS CITY
-      WITH SYNONYMS = ('city', 'location', 'practice city', 'HCP city'),
+    hcps.CITY AS CITY,
 
-    hcps.STATE AS STATE
-      WITH SYNONYMS = ('state', 'practice state', 'HCP state'),
+    hcps.STATE AS STATE,
 
     hcps.HCP_TIER AS HCP_TIER
-      COMMENT = 'Commercial tier classification of the HCP (e.g. Tier 1, Tier 2, Tier 3)'
-      WITH SYNONYMS = ('tier', 'HCP tier', 'prescriber tier', 'doctor tier', 'account tier'),
+      COMMENT = 'Commercial tier classification of the HCP (e.g. Tier 1, Tier 2, Tier 3)',
 
     -- ── Product Dimensions ────────────────────────────────────────────────────
 
     products.PRODUCT_NAME AS PRODUCT
-      COMMENT = 'Product brand name (e.g. VIVITROL, ARISTADA)'
-      WITH SYNONYMS = ('brand', 'drug', 'medicine', 'product name', 'brand name', 'medication'),
+      COMMENT = 'Product brand name (e.g. VIVITROL, ARISTADA)',
 
     products.THERAPEUTIC_AREA AS THERAPEUTIC_AREA
-      COMMENT = 'Therapeutic area the product belongs to (e.g. Addiction, Schizophrenia)'
-      WITH SYNONYMS = ('therapy area', 'TA', 'disease area', 'indication area', 'therapeutic category'),
+      COMMENT = 'Therapeutic area the product belongs to (e.g. Addiction, Schizophrenia)',
 
     -- ── Territory Dimensions ──────────────────────────────────────────────────
 
@@ -160,28 +153,23 @@ CREATE OR REPLACE SEMANTIC VIEW ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_SV
     -- end users.  Cortex Search resolves "Boston territory" → "NE-Boston-114".
     territories.TERRITORY_NAME AS TERRITORY
       COMMENT = 'Sales territory name - uses Cortex Search for fuzzy matching'
-      WITH SYNONYMS = ('territory', 'area', 'sales territory', 'territory name', 'field territory')
       WITH CORTEX SEARCH SERVICE ALKERMES_DEMO.COMMERCIAL.TERRITORY_SEARCH_SVC,
 
     territories.REGION AS REGION
-      COMMENT = 'Geographic sales region (e.g. Northeast, Southeast, Midwest, West)'
-      WITH SYNONYMS = ('region', 'geographic region', 'sales region', 'national region'),
+      COMMENT = 'Geographic sales region (e.g. Northeast, Southeast, Midwest, West)',
 
     territories.DISTRICT AS DISTRICT
-      COMMENT = 'Sales district — grouping of territories within a region'
-      WITH SYNONYMS = ('district', 'sales district', 'field district'),
+      COMMENT = 'Sales district — grouping of territories within a region',
 
     -- ── Sales Rep Dimensions ──────────────────────────────────────────────────
 
     sales_reps.REP_NAME AS REP_NAME
-      COMMENT = 'Full name of the field sales representative'
-      WITH SYNONYMS = ('rep', 'sales rep', 'representative', 'field rep', 'territory rep', 'MSL'),
+      COMMENT = 'Full name of the field sales representative',
 
     -- ── Time Dimension ────────────────────────────────────────────────────────
 
     prescriptions.RX_MONTH AS RX_MONTH
       COMMENT = 'Year-month of the prescription (YYYY-MM format) — use for time-series analysis'
-      WITH SYNONYMS = ('month', 'period', 'time period', 'prescription month', 'reporting month', 'month year')
   )
 
   -- ─────────────────────────────────────────────────────────────────────────────
@@ -193,38 +181,31 @@ CREATE OR REPLACE SEMANTIC VIEW ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_SV
 
     -- Total TRx: all prescription fills
     prescriptions.total_trx AS SUM(TRX)
-      COMMENT = 'Total prescriptions dispensed (all fills including refills)'
-      WITH SYNONYMS = ('total prescriptions', 'TRx', 'scripts', 'total scripts', 'total TRx', 'prescription volume'),
+      COMMENT = 'Total prescriptions dispensed (all fills including refills)',
 
     -- New-to-therapy prescriptions (NRx)
     prescriptions.total_nrx AS SUM(NRX)
-      COMMENT = 'New patient prescriptions — first fills only; leading indicator of new patient acquisition'
-      WITH SYNONYMS = ('new prescriptions', 'NRx', 'new scripts', 'new patient starts', 'new to therapy'),
+      COMMENT = 'New patient prescriptions — first fills only; leading indicator of new patient acquisition',
 
     -- Total market volume for share denominator
     prescriptions.total_market_trx AS SUM(MARKET_TRX)
-      COMMENT = 'Total market TRx across all competitors — denominator for market share calculation'
-      WITH SYNONYMS = ('market size', 'total market', 'market volume', 'class TRx', 'market TRx'),
+      COMMENT = 'Total market TRx across all competitors — denominator for market share calculation',
 
     -- Net revenue
     prescriptions.total_revenue_usd AS SUM(REVENUE_USD)
-      COMMENT = 'Estimated net revenue in USD (post gross-to-net; use as directional indicator)'
-      WITH SYNONYMS = ('revenue', 'sales', 'net revenue', 'total revenue', 'net sales', 'gross revenue'),
+      COMMENT = 'Estimated net revenue in USD (post gross-to-net; use as directional indicator)',
 
     -- Unique writing HCPs
     prescriptions.active_hcps AS COUNT(DISTINCT HCP_ID)
-      COMMENT = 'Count of unique HCPs who wrote at least one prescription in the period'
-      WITH SYNONYMS = ('active doctors', 'writing HCPs', 'active prescribers', 'prescribing physicians', 'unique HCPs'),
+      COMMENT = 'Count of unique HCPs who wrote at least one prescription in the period',
 
     -- Market share percentage
     prescriptions.market_share_pct AS ROUND(SUM(TRX) / NULLIF(SUM(MARKET_TRX), 0) * 100, 2)
-      COMMENT = 'Percentage share of total market prescriptions — product TRx ÷ total market TRx × 100'
-      WITH SYNONYMS = ('market share', 'share', 'share of market', 'SOM', 'share of voice', 'brand share'),
+      COMMENT = 'Percentage share of total market prescriptions — product TRx ÷ total market TRx × 100',
 
     -- Average TRx per writing HCP (rep productivity proxy)
     prescriptions.avg_trx_per_hcp AS ROUND(SUM(TRX) / NULLIF(COUNT(DISTINCT HCP_ID), 0), 1)
       COMMENT = 'Average TRx per writing HCP — proxy for prescriber depth and rep call effectiveness'
-      WITH SYNONYMS = ('productivity', 'HCP productivity', 'scripts per HCP', 'TRx per doctor', 'writer productivity')
   )
 
   COMMENT = 'Pharma commercial analytics semantic view - TRx, NRx, market share, revenue by HCP, product, territory and rep';
