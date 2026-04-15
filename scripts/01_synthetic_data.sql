@@ -7,24 +7,18 @@
 ║  ─────────────────────────────────────────────────────────────────────────  ║
 ║  DATABASE : ALKERMES_DEMO       (change to your preferred database name)     ║
 ║  SCHEMA   : COMMERCIAL          (change to your preferred schema name)       ║
-║  WAREHOUSE: XSMALL_WH           (change to your warehouse)                   ║
+║  WAREHOUSE: COMMERCIAL_AGENT_NON_CONF_R_WH           (change to your warehouse)                   ║
 ║  ROLE     : ACCOUNTADMIN        (change to SYSADMIN or your admin role)      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
   Run order: 01 → 02 → 03 → 04 → 05 → 06
-  Estimated run time: ~2 minutes on XSMALL
+  Estimated run time: ~2 minutes
 */
 
 -- ── 0. SETUP ──────────────────────────────────────────────────────────────────
 USE ROLE ACCOUNTADMIN;
 
-CREATE WAREHOUSE IF NOT EXISTS XSMALL_WH
-    WAREHOUSE_SIZE = 'XSMALL'
-    AUTO_SUSPEND   = 300
-    AUTO_RESUME    = TRUE
-    COMMENT        = 'Demo warehouse for pharma commercial analytics';
-
-USE WAREHOUSE XSMALL_WH;
+USE WAREHOUSE COMMERCIAL_AGENT_NON_CONF_R_WH;
 
 CREATE DATABASE IF NOT EXISTS ALKERMES_DEMO
     COMMENT = 'Pharma commercial analytics demo database';

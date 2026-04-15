@@ -60,7 +60,7 @@
 -- ============================================================
 SET demo_db        = 'ALKERMES_DEMO';
 SET demo_schema    = 'COMMERCIAL';
-SET demo_warehouse = 'XSMALL_WH';
+SET demo_warehouse = 'COMMERCIAL_AGENT_NON_CONF_R_WH';
 SET demo_role      = 'SYSADMIN';
 
 USE ROLE      IDENTIFIER($demo_role);
@@ -225,7 +225,7 @@ CREATE OR REPLACE AGENT ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT
       semantic_view: "ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_SV"
       execution_environment:
         type: warehouse
-        warehouse: XSMALL_WH
+        warehouse: COMMERCIAL_AGENT_NON_CONF_R_WH
 
     FieldIntelligence:
       name: "ALKERMES_DEMO.COMMERCIAL.CALL_INTEL_SEARCH_SVC"
@@ -286,7 +286,7 @@ GRANT USAGE ON AGENT ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_AGENT
 -- The agent also requires the invoking role to have USAGE on:
 --   • The semantic view: ALKERMES_DEMO.COMMERCIAL.COMMERCIAL_ANALYTICS_SV
 --   • The search service: ALKERMES_DEMO.COMMERCIAL.CALL_INTEL_SEARCH_SVC
---   • The warehouse: XSMALL_WH
+--   • The warehouse: COMMERCIAL_AGENT_NON_CONF_R_WH
 -- Ensure those grants are in place for any downstream role.
 
 

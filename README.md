@@ -170,7 +170,7 @@ Script 01 uses `INSERT` statements with synthetic data. Replace or supplement wi
 - Managed care organization (MCO) formulary data for market access
 
 **Adjust warehouse sizes:**
-The default is `COMPUTE_WH`. For production workloads with large prescription datasets, consider an X-Large warehouse for the Cortex Search indexing step (script 02 and 04) and a smaller warehouse for Cortex Analyst queries.
+The default is `COMMERCIAL_AGENT_NON_CONF_R_WH`. For production workloads with large prescription datasets, consider an X-Large warehouse for the Cortex Search indexing step (script 02 and 04) and a smaller warehouse for Cortex Analyst queries.
 
 **Modify product names:**
 Search for `Vivitrol`, `Aristada`, `Lybalvi` across the scripts and replace with your product portfolio. Update the `PRODUCTS` table insert in script 01 and the Semantic View `PRODUCT_NAME` dimension filters in script 03.

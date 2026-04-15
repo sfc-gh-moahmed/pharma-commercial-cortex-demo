@@ -7,7 +7,7 @@
 -- ──────────────────────────────────────────────────────────────────────────────
 -- DATABASE  : ALKERMES_DEMO
 -- SCHEMA    : COMMERCIAL
--- WAREHOUSE : COMPUTE_WH        (change to your warehouse)
+-- WAREHOUSE : COMMERCIAL_AGENT_NON_CONF_R_WH        (change to your warehouse)
 -- ROLE      : SYSADMIN           (or a role with CREATE SEMANTIC VIEW)
 -- ──────────────────────────────────────────────────────────────────────────────
 --
@@ -50,7 +50,7 @@
 USE ROLE     SYSADMIN;
 USE DATABASE ALKERMES_DEMO;
 USE SCHEMA   COMMERCIAL;
-USE WAREHOUSE COMPUTE_WH;
+USE WAREHOUSE COMMERCIAL_AGENT_NON_CONF_R_WH;
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- CREATE SEMANTIC VIEW: COMMERCIAL_ANALYTICS_SV
