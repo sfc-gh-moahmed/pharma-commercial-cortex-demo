@@ -131,41 +131,25 @@ SHOW CORTEX SEARCH SERVICES IN SCHEMA ALKERMES_DEMO.COMMERCIAL;
 -- The user typed "Dr. Andersen"; the service resolves to matching stored names.
 SELECT SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
   'ALKERMES_DEMO.COMMERCIAL.HCP_NAME_SEARCH_SVC',
-  OBJECT_CONSTRUCT(
-    'query',   'Dr. Andersen',
-    'columns', ARRAY_CONSTRUCT('HCP_FULL_NAME'),
-    'limit',   5
-  )::VARCHAR
+  '{"query": "Dr. Andersen", "columns": ["HCP_FULL_NAME"], "limit": 5}'
 ) AS hcp_search_result;
 
 -- Demo 4b: Partial surname lookup — simulates "Prescriptions for Patel"
 SELECT SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
   'ALKERMES_DEMO.COMMERCIAL.HCP_NAME_SEARCH_SVC',
-  OBJECT_CONSTRUCT(
-    'query',   'Patel psychiatrist',
-    'columns', ARRAY_CONSTRUCT('HCP_FULL_NAME'),
-    'limit',   5
-  )::VARCHAR
+  '{"query": "Patel psychiatrist", "columns": ["HCP_FULL_NAME"], "limit": 5}'
 ) AS hcp_search_result;
 
 -- Demo 4c: Territory fuzzy lookup — simulates "Boston territory performance"
 SELECT SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
   'ALKERMES_DEMO.COMMERCIAL.TERRITORY_SEARCH_SVC',
-  OBJECT_CONSTRUCT(
-    'query',   'Boston territory',
-    'columns', ARRAY_CONSTRUCT('TERRITORY_NAME'),
-    'limit',   5
-  )::VARCHAR
+  '{"query": "Boston territory", "columns": ["TERRITORY_NAME"], "limit": 5}'
 ) AS territory_search_result;
 
 -- Demo 4d: Territory lookup by region keyword
 SELECT SNOWFLAKE.CORTEX.SEARCH_PREVIEW(
   'ALKERMES_DEMO.COMMERCIAL.TERRITORY_SEARCH_SVC',
-  OBJECT_CONSTRUCT(
-    'query',   'Southeast Ohio',
-    'columns', ARRAY_CONSTRUCT('TERRITORY_NAME'),
-    'limit',   5
-  )::VARCHAR
+  '{"query": "Southeast Ohio", "columns": ["TERRITORY_NAME"], "limit": 5}'
 ) AS territory_search_result;
 
 -- ═══════════════════════════════════════════════════════════════════════════════
